@@ -1,4 +1,6 @@
 const MovieController = require('../controllers').MovieController;
+const ProducerController = require('../controllers').ProducerController;
+const GenreController = require('../controllers').GenreController;
 
 let express = require('express');
 let router = express.Router();
@@ -21,15 +23,18 @@ router.post('/movies', async (req, res) => {
         req.body.title
         && req.body.description
         && req.body.year
-        && req.body.producer
-        && req.body.genre
+        && req.body.producerId
+        && req.body.genreId
     ) {
+        const producer = await ProducerController.getById(req.body.producerId)
+        const genre = await GenreController.getById(req.body.genreId)
+
         const insertedMovie = await MovieController.add(
             req.body.title,
             req.body.description,
             req.body.year,
-            req.body.producer,
-            req.body.genre
+            producer,
+            genre,
         );
 
         res.status(201).json(insertedMovie);
@@ -44,11 +49,18 @@ router.patch('/movies/:id', async (req, res) => {
         !req.body.title
         && !req.body.description
         && !req.body.year
-        && !req.body.producer
-        && !req.body.genre
+        && !req.body.producerId
+        && !req.body.genreId
     ) {
         res.status(400).end();
         return
+    }
+
+    if (req.body.producerId !== null) {
+        req.body.producerId = await ProducerController.getById(req.body.producerId);
+    }
+    if (req.body.genreId !== null) {
+        req.body.genreId = await GenreController.getById(req.body.genreId);
     }
 
     const updatedMovie = await MovieController.update(req.params.id, req.body);

@@ -1,24 +1,38 @@
+const {Model} = require('sequelize');
+
 const Movie = require('../models').Movie;
+const Genre = require('../models').Genre;
+const Producer = require('../models').Producer;
 
 class MovieController
 {
     async getAll() {
-        return Movie.findAll();
+        return await Movie.findAll({
+            include: {all: true},
+            attributes: {exclude: ['Genre', 'Producer']},
+        });
     }
 
     async getById(id) {
-        return Movie.findByPk(id);
+        return Movie.findByPk(id, {
+            include: {all: true},
+            attributes: {exclude: ['Genre', 'Producer']},
+        });
     }
 
     async add(title, description, year, producer, genre) {
         try {
-            return await Movie.create({
+            const movie = await Movie.create({
                 title,
                 description,
                 year,
-                producer,
-                genre,
             });
+
+            await movie.setGenre(genre);
+            await movie.setProducer(producer);
+            movie.save();
+
+            return movie;
         } catch (err) {
             console.log(err);
         }
