@@ -5,9 +5,23 @@ GET http://localhost:3000/api/movies/1
 
 ###
 POST http://localhost:3000/api/movies
+Content-Type: application/json
+
+{
+    "title": "Atlantis tower",
+    "description": "Gravimetric transporters, to the homeworld. The voyage is an interstellar astronaut. Pathway of a lunar hypnosis, grab the wind!",
+    "year": "2021",
+    "producer": "won't work",
+    "genre": "won't work"
+}
 
 ###
-PUT http://localhost:3000/api/movies/1
+PATCH http://localhost:3000/api/movies/1
+Content-Type: application/json
+
+{
+    "title": "Deep space"
+}
 
 ###
-DELETE http://localhost:3000/api/movies/2
+DELETE http://localhost:3000/api/movies/1
