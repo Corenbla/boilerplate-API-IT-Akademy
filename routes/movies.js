@@ -7,6 +7,7 @@ let router = express.Router();
 
 router.get('/movies', async (req, res) => {
     const {page, size} = req.query;
+    const genreName = req.query.genre;
 
     if (typeof page !== 'undefined' || typeof size !== 'undefined') {
         const limit = size ? +size : 3;
@@ -16,27 +17,18 @@ router.get('/movies', async (req, res) => {
         }
 
         res.json(await MovieController.getAllPaginated(limit, offset));
+    } else if (typeof genreName !== 'undefined') {
+        const genre = await GenreController.getByName(genreName);
+
+        if (genre.length === 0) {
+            res.status(404).json({ "error": "Genre not found" });
+        }
+
+        res.json(await MovieController.getByGenre(genre));
     } else {
         res.json(await MovieController.getAll());
     }
     // sort this :
-    const genreName = req.query.genre;
-    if (typeof genreName === 'undefined') {
-        res.json(await MovieController.getAll());
-    } else {
-        const genre = await GenreController.getByName(genreName);
-        if (genre.length === 0) {
-            res.status(404).json({ "error": "Genre not found" });
-        }
-        let test;
-        try {
-            test = await MovieController.getByGenre(genre);
-        }
-        catch (e) {
-            console.error(e);
-        }
-        res.json(test);
-    }
 });
 
 router.get('/movies/:id', async (req, res) => {
