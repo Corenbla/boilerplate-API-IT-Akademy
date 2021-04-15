@@ -6,7 +6,7 @@ let express = require('express');
 let router = express.Router();
 
 router.get('/movies', async (req, res) => {
-    const {page, size} = req.query;
+    const {page, size, sort} = req.query;
     const genreName = req.query.genre;
 
     if (typeof page !== 'undefined' || typeof size !== 'undefined') {
@@ -25,6 +25,15 @@ router.get('/movies', async (req, res) => {
         }
 
         res.json(await MovieController.getByGenre(genre));
+    } else if (typeof sort !== 'undefined') {
+        let movies;
+        try {
+            movies = await MovieController.getSortBy(sort);
+        } catch (e) {
+            res.status(400).json({"error": "Column not found"})
+        }
+
+        res.json(movies);
     } else {
         res.json(await MovieController.getAll());
     }

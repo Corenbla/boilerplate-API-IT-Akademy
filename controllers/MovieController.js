@@ -1,8 +1,4 @@
-const {Op} = require('sequelize');
-
 const Movie = require('../models').Movie;
-const Genre = require('../models').Genre;
-const Producer = require('../models').Producer;
 
 class MovieController
 {
@@ -10,6 +6,16 @@ class MovieController
         return Movie.findAll({
             include: {all: true},
             attributes: {exclude: ['Genre', 'Producer']},
+        });
+    }
+
+    async getSortBy(column) {
+        return Movie.findAll({
+            include: {all: true},
+            attributes: {exclude: ['Genre', 'Producer']},
+            order: [
+                [column, 'ASC'],
+            ],
         });
     }
 
