@@ -1,22 +1,35 @@
-const {Model} = require('sequelize');
+const { Op } = require('sequelize');
 
 const Movie = require('../models').Movie;
 const Genre = require('../models').Genre;
 const Producer = require('../models').Producer;
 
-class MovieController
-{
+class MovieController {
     async getAll() {
-        return await Movie.findAll({
-            include: {all: true},
-            attributes: {exclude: ['Genre', 'Producer']},
+        return Movie.findAll({
+            include: { all: true },
+            attributes: { exclude: ['Genre', 'Producer'] },
+        });
+    }
+
+    async getByGenre(genres) {
+        const genresIds = genres.map((genre) => {
+            return genre.id;
+        });
+        console.log(genresIds);
+        return Movie.findAll({
+            include: { all: true },
+            attributes: { exclude: ['Genre', 'Producer'] },
+            where: {
+                'GenreId': genresIds
+            }
         });
     }
 
     async getById(id) {
         return Movie.findByPk(id, {
-            include: {all: true},
-            attributes: {exclude: ['Genre', 'Producer']},
+            include: { all: true },
+            attributes: { exclude: ['Genre', 'Producer'] },
         });
     }
 

@@ -1,13 +1,24 @@
+const { Op } = require('sequelize');
+
 const Genre = require('../models').Genre;
 
-class GenreController
-{
+class GenreController {
     async getAll() {
         return Genre.findAll();
     }
 
     async getById(id) {
         return Genre.findByPk(id);
+    }
+
+    async getByName(name) {
+        return Genre.findAll({
+            where: {
+                name: {
+                    [Op.like]: `%${name}%`
+                }
+            }
+        });
     }
 
     async add(name) {
