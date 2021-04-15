@@ -6,6 +6,20 @@ let express = require('express');
 let router = express.Router();
 
 router.get('/movies', async (req, res) => {
+    const {page, size} = req.query;
+
+    if (typeof page !== 'undefined' || typeof size !== 'undefined') {
+        const limit = size ? +size : 3;
+        let offset = page * size;
+        if (Number.isNaN(offset)) {
+            offset = 0;
+        }
+
+        res.json(await MovieController.getAllPaginated(limit, offset));
+    } else {
+        res.json(await MovieController.getAll());
+    }
+    // sort this :
     const genreName = req.query.genre;
     if (typeof genreName === 'undefined') {
         res.json(await MovieController.getAll());
@@ -28,7 +42,7 @@ router.get('/movies', async (req, res) => {
 router.get('/movies/:id', async (req, res) => {
     const movie = await MovieController.getById(req.params.id);
     if (movie === null) {
-        res.status(404).json({ "error": "Movie not found" });
+        res.status(404).json({"error": "Movie not found"});
         return;
     }
     res.json(movie);
@@ -86,13 +100,13 @@ router.patch('/movies/:id', async (req, res) => {
         return
     }
 
-    res.status(404).json({ 'error': "Movie doesn't exist" });
+    res.status(404).json({'error': "Movie doesn't exist"});
 });
 
 router.delete('/movies/:id', async (req, res) => {
     const success = await MovieController.delete(req.params.id);
     if (!success) {
-        res.status(404).json({ 'error': 'Movie not found' });
+        res.status(404).json({'error': 'Movie not found'});
         return
     }
 

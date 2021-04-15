@@ -1,5 +1,8 @@
 GET http://localhost:3000/api/movies
 
+### Get movies with ID 3, 4 and 5
+GET http://localhost:3000/api/movies?page=1&size=3
+
 ###
 GET http://localhost:3000/api/movies/16
 
