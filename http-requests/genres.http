@@ -1,5 +1,8 @@
 GET http://localhost:3000/api/genres
 
+### Search
+GET http://localhost:3000/api/genres?name=Drama
+
 ###
 GET http://localhost:3000/api/genres/1
 

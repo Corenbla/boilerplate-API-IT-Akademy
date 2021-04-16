@@ -4,7 +4,14 @@ let express = require('express');
 let router = express.Router();
 
 router.get('/genres', async (req, res) => {
-    res.json(await GenreController.getAll());
+    const {name} = req.query;
+
+    if (typeof name !== 'undefined') {
+        res.json(await GenreController.getByName(name));
+    } else {
+        res.json(await GenreController.getAll());
+    }
+
 });
 
 router.get('/genres/:id', async (req, res) => {
